@@ -33,6 +33,14 @@ time_t Time::nowSec()
 	return tv.tv_sec;
 }
 
+Time Time::nowuSec()
+{
+	struct timeval tv;
+	::gettimeofday(&tv, 0);
+	int64_t seconds = tv.tv_sec;
+	return Time(seconds * 1000 * 1000 + tv.tv_usec );
+}
+
 void Time::toLocalTime(time_t second, long timezone, struct tm* tm_time)
 {
 	uint32_t n32_Pass4year;

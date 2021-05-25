@@ -1,5 +1,7 @@
 #include "mudf_socket.hpp"
 #include "src/dataStructure/threadsafe_queue.hpp"
+#include "timer.h"
+#include "rbTree.hpp"
 
 #include <atomic>
 #include <thread>
@@ -7,6 +9,8 @@
 #include <sstream> // std::ostringstream
 
 #include "mydb.hpp"
+
+
 
 std::atomic<int> times;
 
@@ -95,10 +99,63 @@ void mydb_Pedis_test(){
 
 }
 
+void timer_test() {
+
+    // timerEvent的排序，验证<重载
+    // peng::timerEvent::test();
+
+    // 红黑树测试
+    // peng::RBTree<int> rbt;
+    // std::vector<int> nums(10);
+    // for(int i=0;i<10;++i) {
+    //     nums[i] = i;
+    //     rbt.insert( i );
+    // }
+    // std::cout << "rbTree size: " << rbt.size() << std::endl;
+    // rbt.print();
+    // for(int i=0;i<10;++i) {
+    //     rbt.remove( i );
+    //     std::cout << "rbTree size: " << rbt.size() << std::endl;
+    //     rbt.print();
+    // }
+
+    // rbTree Timer测试
+    peng::rbtTimer rbtt;
+    for(int i=0;i<10;++i) {
+
+        // peng::timerEvent *te = rbtt.addTimer()方式创建定时器
+        std::cout << "add timer " << i << std::endl;
+        int delay = rand()%1024 * 1000; // ms
+        uint64_t target = peng::Time::nowuSec().getTimeVal() + delay;
+        auto te = rbtt.addTimer( [i,target]{
+            uint64_t now = peng::Time::nowuSec().getTimeVal();
+            LOGW( "Function %d running at %ld , %ld ,diff %lu us.\r\n",i,now,target,now-target);
+        } , delay  );
+        
+        // rbtt.addTimer(timerEvent* te)方式创建线程
+        // std::cout << "add timer " << i << std::endl;
+        // int delay = rand()%1024 * 1000; // ms
+        // uint64_t target = peng::Time::nowuSec().getTimeVal() + delay;
+        // peng::timerEvent *te = new peng::timerEvent( [i,target]{
+        //     uint64_t now = peng::Time::nowuSec().getTimeVal();
+        //     LOGW( "Function %d running at %ld , %ld ,diff %lu us.\r\n",i,now,target,now-target);
+        // } , delay );
+        // rbtt.addTimer(te);
+
+        if(rand()%2==0) {
+            std::cout << "remove timer " << i << std::endl;
+            rbtt.delTimer(te);
+        }
+
+    }
+}
+
 int main(){
 
     srand( time(NULL) );
     // mydb_Redis_test();
-    mydb_Pedis_test();
+    // mydb_Pedis_test();
 
+    timer_test();
+    ::sleep(10);
 }

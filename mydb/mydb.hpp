@@ -69,8 +69,8 @@ class mydb_Redis:public mydb{
             oss << std::this_thread::get_id();
             std::string stid = oss.str();
             _tid = std::stoull(stid);
-            std::cout << "Redis thread:" << _tid << std::endl;
-
+            LOGD( "Thread %lluld running Redis Client.\r\n" , _tid );
+            
             // 创建连接
             client_write = new peng::Redis_client; 
 

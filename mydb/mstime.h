@@ -46,6 +46,9 @@ namespace peng
 		//1970年1月1日到现在的毫秒数
 		static Time now();
 
+		//1970年1月1日到现在的微秒数
+		static Time nowuSec();
+
 		//1970年1月1日到现在的秒数
 		static time_t nowSec();
 
